@@ -1,6 +1,86 @@
-type ExampleEntity @entity {
-  id: ID!
-  count: BigInt!
-  strategy: Bytes! # address
-  conversionRate: BigInt! # uint256
+type Transaction @entity {
+	id:                           ID!
+	timestamp:                    BigInt!
+	blockNumber:                  BigInt!
+	events:                       [Event!]! @derivedFrom(field: "transaction")
+}
+
+###############################################################################
+#                                  Protocol                                   #
+###############################################################################
+
+type Account @entity
+{
+	id:                           ID!
+	# ---------------------------------- state ----------------------------------
+	hat:                          Hat!
+	balance:                      BigDecimal!
+	# interest:                     BigDecimal!
+	# balanceInternal:              BigDecimal!
+	# debt:                         BigDecimal!
+	# recipients:                   [DebtRecipient!]! @derivedFrom(field: "recipient")
+	# interestPayable:              BigDecimal!
+	# cumulativeInterest:           BigDecimal!
+	# ---------------------------------- links ----------------------------------
+	hatMember:                    [HatMembership!]! @derivedFrom(field: "account")
+	# --------------------------------- events ----------------------------------
+	transfersFrom:                [Transfer!]! @derivedFrom(field: "from")
+	transfersTo:                  [Transfer!]! @derivedFrom(field: "to")
+	eventsHatChanged:             [HatEvent!]! @derivedFrom(field: "account")
+}
+
+type Hat @entity
+{
+	id:                           ID!
+	# ---------------------------------- state ----------------------------------
+	users:                        Hat! @derivedFrom(field: "hat")
+	# ---------------------------------- links ----------------------------------
+	members:                      [HatMembership!]! @derivedFrom(field: "hat")
+	# --------------------------------- events ----------------------------------
+	eventsHatChanged:             [HatEvent!]! @derivedFrom(field: "hat")
+}
+
+type HatMembership @entity
+{
+	id:                           ID!
+	# ---------------------------------- state ----------------------------------
+	hat:                          Hat!
+	account:                      Account!
+	protion:                      Int!
+}
+
+# TODO
+# type Loan @entity
+# {
+# 	id:                           ID!
+# 	from:                         Account!
+# 	to:                           Account!
+# 	timestamp:                    BigInt!
+# }
+
+###############################################################################
+#                                   Events                                    #
+###############################################################################
+
+interface Event
+{
+	id:                           ID!
+	transaction:                  Transaction!
+}
+
+type Transfer implements Event @entity
+{
+	id:                           ID!
+	transaction:                  Transaction!
+	from:                         Account!
+	to:                           Account!
+	value:                        Int!
+}
+
+type HatChanged implements Event @entity
+{
+	id:                           ID!
+	transaction:                  Transaction!
+	account:                      Account!
+	hat:                          Hat!
 }

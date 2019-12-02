@@ -1,4 +1,4 @@
-specVersion: 0.0.1
+specVersion: 0.0.2
 schema:
   file: ./schema.graphql
 dataSources:
@@ -6,22 +6,20 @@ dataSources:
     name: Contract
     network: mainnet
     source:
-      address: "0x293908E6352b11a91bC08eeb335644C485D21170"
+      address: "0xea8b224eDD3e342DEb514C4176c2E72Bcce6fFF9"
       abi: Contract
+      startBlock: 8764716
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.2
+      apiVersion: 0.0.3
       language: wasm/assemblyscript
       entities:
-        - AllocationStrategyChanged
-        - Approval
-        - CodeUpdated
-        - HatChanged
-        - HatCreated
-        - InterestPaid
-        - LoansTransferred
-        - OwnershipTransferred
+        - Transaction
+        - Account
+        - Hat
+        - HatMembership
         - Transfer
+        - HatChanged
       abis:
         - name: Contract
           file: ./abis/Contract.json
