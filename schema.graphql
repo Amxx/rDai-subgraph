@@ -75,7 +75,7 @@ type Transfer implements Event @entity
 	value:                        BigDecimal! # in rDai
 }
 
-type LoanTransferred implements Events @entity
+type LoanTransferred implements Event @entity
 {
 	id:                           ID!
 	transaction:                  Transaction!
@@ -83,7 +83,7 @@ type LoanTransferred implements Events @entity
 	value:                        BigDecimal! # in rDai (redeemableAmount)
 }
 
-type InterestPaid implements Events @entity
+type InterestPaid implements Event @entity
 {
 	id:                           ID!
 	transaction:                  Transaction!
