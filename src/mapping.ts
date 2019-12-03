@@ -1,18 +1,39 @@
-import { BigInt } from "@graphprotocol/graph-ts"
 import {
-  Contract,
-  AllocationStrategyChanged,
-  Approval,
-  CodeUpdated,
-  HatChanged,
-  HatCreated,
-  InterestPaid,
-  LoansTransferred,
-  OwnershipTransferred,
-  Transfer
-} from "../generated/Contract/Contract"
-import { ExampleEntity } from "../generated/schema"
+	EthereumEvent
+} from "@graphprotocol/graph-ts"
 
+import {
+	RToken,
+	AllocationStrategyChanged as AllocationStrategyChangedEvent,
+	Approval                  as ApprovalEvent,
+	CodeUpdated               as CodeUpdatedEvent,
+	HatChanged                as HatChangedEvent,
+	HatCreated                as HatCreatedEvent,
+	InterestPaid              as InterestPaidEvent,
+	LoansTransferred          as LoansTransferredEvent,
+	OwnershipTransferred      as OwnershipTransferredEvent,
+	Transfer                  as TransferEvent,
+} from "../generated/RToken/RToken"
+
+import {
+	Transaction,
+	Account,
+	Loan,
+	Hat,
+	HatMembership,
+	Transfer,
+	LoanTransferred,
+	InterestPaid,
+	HatChanged,
+} from "../generated/schema"
+
+import {
+	createEventID,
+	createLoanID,
+	fetchAccount,
+	logTransaction,
+	toDai,
+} from './utils'
 
 // let contract = Contract.bind(event.address)
 //
@@ -73,20 +94,71 @@ import { ExampleEntity } from "../generated/schema"
 // - contract.transferAllowances(...)
 // - contract.transferFrom(...)
 
-export function handleAllocationStrategyChanged(event: AllocationStrategyChanged): void {}
+export function handleHatChanged(event: HatChangedEvent): void
+{
+	let account = fetchAccount(event.params.account.toHex())
+	account.hat = event.params.newHatID.toString()
+	account.save()
 
-export function handleApproval(event: Approval): void {}
+	let ev = new HatChanged(createEventID(event))
+	ev.transaction = logTransaction(event).id
+	ev.account     = event.params.account.toHex()
+	ev.hat         = event.params.newHatID.toString()
+	ev.save()
+}
 
-export function handleCodeUpdated(event: CodeUpdated): void {}
+export function handleHatCreated(event: HatCreatedEvent): void
+{
+	let hat = new Hat(event.params.hatID.toString())
+	hat.save()
 
-export function handleHatChanged(event: HatChanged): void {}
+	let hatstats    = RToken.bind(event.address).getHatByID(event.params.hatID)
+	let hataccounts = hatstats.value0
+	let hatportions = hatstats.value1
 
-export function handleHatCreated(event: HatCreated): void {}
+	for (let i = 0;  i < hataccounts.length; ++i)
+	{
+		let hatmembership = new HatMembership(hat.id.concat(i.toString()))
+		hatmembership.account = hataccounts[i].toHex()
+		hatmembership.portion = hatportions[i]
+		hatmembership.save()
+	}
+}
 
-export function handleInterestPaid(event: InterestPaid): void {}
+export function handleInterestPaid(event: InterestPaidEvent): void
+{
+	// balance is updated by the transfer event
+	let ev = new InterestPaid(createEventID(event))
+	ev.transaction = logTransaction(event).id
+	ev.account     = event.params.recipient.toHex()
+	ev.value       = toDai(event.params.amount)
+	ev.save()
+}
 
-export function handleLoansTransferred(event: LoansTransferred): void {}
+export function handleLoansTransferred(event: LoansTransferredEvent): void
+{
+	// TODO
+}
 
-export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+export function handleTransfer(event: TransferEvent): void
+{
+	let fromAccount = fetchAccount(event.params.from.toHex())
+	fromAccount.balance = toDai(RToken.bind(event.address).balanceOf(event.params.from))
+	fromAccount.save()
 
-export function handleTransfer(event: Transfer): void {}
+	let toAccount = fetchAccount(event.params.to.toHex())
+	toAccount.balance = toDai(RToken.bind(event.address).balanceOf(event.params.to))
+	toAccount.save()
+
+	let ev = new Transfer(createEventID(event))
+	ev.transaction = logTransaction(event).id
+	ev.from        = event.params.from.toHex()
+	ev.to          = event.params.to.toHex()
+	ev.value       = toDai(event.params.value)
+	ev.save()
+}
+
+export function handleAllocationStrategyChanged(event: AllocationStrategyChangedEvent): void {}
+export function handleApproval(event: ApprovalEvent): void {}
+export function handleCodeUpdated(event: CodeUpdatedEvent): void {}
+export function handleOwnershipTransferred(event: OwnershipTransferredEvent): void {}

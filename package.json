@@ -1,6 +1,19 @@
 {
-  "name": "rDai",
-  "license": "UNLICENSED",
+  "name": "rDai-subgrapg",
+  "version": "0.0.1",
+  "description": "A subgraph to explore the rDai network",
+  "authors": "Hadrien Croubois & Patrick Gallagher",
+  "license": "",
+  "homepage": "",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/Amxx/rDai-subgraph"
+  },
+  "bugs":
+  {
+    "url": "https://github.com/Amxx/rDai-subgraph/issues"
+  },
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",

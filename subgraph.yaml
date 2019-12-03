@@ -3,11 +3,11 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Contract
+    name: RToken
     network: mainnet
     source:
       address: "0xea8b224eDD3e342DEb514C4176c2E72Bcce6fFF9"
-      abi: Contract
+      abi: RToken
       startBlock: 8764716
     mapping:
       kind: ethereum/events
@@ -24,8 +24,8 @@ dataSources:
         - InterestPaid
         - HatChanged
       abis:
-        - name: Contract
-          file: ./abis/Contract.json
+        - name: RToken
+          file: ./abis/RToken.json
       eventHandlers:
         - event: AllocationStrategyChanged(address,uint256)
           handler: handleAllocationStrategyChanged
