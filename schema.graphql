@@ -2,7 +2,7 @@ type Transaction @entity {
 	id:                           ID!
 	timestamp:                    BigInt!
 	blockNumber:                  BigInt!
-	events:                       [Event!]! @derivedFrom(field: "transaction")
+	events:                       [Event!]!           @derivedFrom(field: "transaction")
 }
 
 ###############################################################################
@@ -13,50 +13,48 @@ type Account @entity
 {
 	id:                           ID!
 	# ---------------------------------- state ----------------------------------
-	hat:                          Hat!
-	balance:                      BigDecimal!
-	# interest:                     BigDecimal!
-	# balanceInternal:              BigDecimal!
-	# debt:                         BigDecimal!
-	# recipients:                   [DebtRecipient!]! @derivedFrom(field: "recipient")
-	# interestPayable:              BigDecimal!
-	# cumulativeInterest:           BigDecimal!
+	hat:                          Hat! # todo: case 0 ?
+	balance:                      BigDecimal! # in rDai (rAmount)
 	# ---------------------------------- links ----------------------------------
-	hatMember:                    [HatMembership!]! @derivedFrom(field: "account")
-	# --------------------------------- events ----------------------------------
-	transfersFrom:                [Transfer!]! @derivedFrom(field: "from")
-	transfersTo:                  [Transfer!]! @derivedFrom(field: "to")
-	eventsHatChanged:             [HatEvent!]! @derivedFrom(field: "account")
+	loansOwned:                   [Loan!]!            @derivedFrom(field: "owner")
+	loansReceived:                [Loan!]!            @derivedFrom(field: "recipient")
+	hatMember:                    [HatMembership!]!   @derivedFrom(field: "account")
+	transfersFrom:                [Transfer!]!        @derivedFrom(field: "from")
+	transfersTo:                  [Transfer!]!        @derivedFrom(field: "to")
+	interests:                    [InterestPaid!]!    @derivedFrom(field: "account")
+	eventsHatChanged:             [HatEvent!]!        @derivedFrom(field: "account")
+}
+
+type Loan @entity
+{
+	id:                           ID!
+	# ---------------------------------- state ----------------------------------
+	owner:                        Account!
+	recipient:                    Account!
+	value:                        BigDecimal! # in rDai (accounts[owner].lRecipients[recipient])
+	hat:                          Hat! # todo: case 0 ?
+	# ---------------------------------- links ----------------------------------
+	transfers:                    [LoanTransferred!]! @derivedFrom(field: "loan")
 }
 
 type Hat @entity
 {
 	id:                           ID!
-	# ---------------------------------- state ----------------------------------
-	users:                        Hat! @derivedFrom(field: "hat")
 	# ---------------------------------- links ----------------------------------
-	members:                      [HatMembership!]! @derivedFrom(field: "hat")
-	# --------------------------------- events ----------------------------------
-	eventsHatChanged:             [HatEvent!]! @derivedFrom(field: "hat")
+	users:                        [Account!]!         @derivedFrom(field: "hat")
+	loans:                        [Loan!]!            @derivedFrom(field: "hat")
+	members:                      [HatMembership!]!   @derivedFrom(field: "hat")
+	eventsHatChanged:             [HatEvent!]!        @derivedFrom(field: "hat")
 }
 
 type HatMembership @entity
 {
 	id:                           ID!
 	# ---------------------------------- state ----------------------------------
-	hat:                          Hat!
+	hat:                          Hat! # no case 0 here
 	account:                      Account!
 	protion:                      Int!
 }
-
-# TODO
-# type Loan @entity
-# {
-# 	id:                           ID!
-# 	from:                         Account!
-# 	to:                           Account!
-# 	timestamp:                    BigInt!
-# }
 
 ###############################################################################
 #                                   Events                                    #
@@ -75,6 +73,22 @@ type Transfer implements Event @entity
 	from:                         Account!
 	to:                           Account!
 	value:                        Int!
+}
+
+type LoanTransferred implements Events @entity
+{
+	id:                           ID!
+	transaction:                  Transaction!
+	loan:                         Loan!
+	value:                        BigDecimal! # in rDai (redeemableAmount)
+}
+
+type InterestPaid implements Events @entity
+{
+	id:                           ID!
+	transaction:                  Transaction!
+	account:                      Account!
+	value:                        BigDecimal!
 }
 
 type HatChanged implements Event @entity
