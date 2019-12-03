@@ -16,9 +16,12 @@ dataSources:
       entities:
         - Transaction
         - Account
+        - Loan
         - Hat
         - HatMembership
         - Transfer
+        - LoanTransferred
+        - InterestPaid
         - HatChanged
       abis:
         - name: Contract

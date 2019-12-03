@@ -22,7 +22,7 @@ type Account @entity
 	transfersFrom:                [Transfer!]!        @derivedFrom(field: "from")
 	transfersTo:                  [Transfer!]!        @derivedFrom(field: "to")
 	interests:                    [InterestPaid!]!    @derivedFrom(field: "account")
-	eventsHatChanged:             [HatEvent!]!        @derivedFrom(field: "account")
+	events:                       [HatChanged!]!      @derivedFrom(field: "account")
 }
 
 type Loan @entity
@@ -44,7 +44,7 @@ type Hat @entity
 	users:                        [Account!]!         @derivedFrom(field: "hat")
 	loans:                        [Loan!]!            @derivedFrom(field: "hat")
 	members:                      [HatMembership!]!   @derivedFrom(field: "hat")
-	eventsHatChanged:             [HatEvent!]!        @derivedFrom(field: "hat")
+	events:                       [HatChanged!]!      @derivedFrom(field: "hat")
 }
 
 type HatMembership @entity
