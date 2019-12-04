@@ -118,9 +118,12 @@ export function handleHatCreated(event: HatCreatedEvent): void
 
 	for (let i = 0;  i < hataccounts.length; ++i)
 	{
-		let hatmembership = new HatMembership(hat.id.concat(i.toString()))
+		let account = fetchAccount(hataccounts[i].toHex())
+		account.save()
+
+		let hatmembership = new HatMembership(hat.id.concat('-').concat(i.toString()))
 		hatmembership.hat     = hat.id
-		hatmembership.account = hataccounts[i].toHex()
+		hatmembership.account = account.id
 		hatmembership.portion = hatportions[i]
 		hatmembership.save()
 	}
