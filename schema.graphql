@@ -13,7 +13,7 @@ type Account @entity
 {
 	id:                           ID!
 	# ---------------------------------- state ----------------------------------
-	hat:                          Hat! # todo: case 0 ?
+	hat:                          Hat # todo: case 0 ?
 	balance:                      BigDecimal! # in rDai (rAmount)
 	# ---------------------------------- links ----------------------------------
 	loansOwned:                   [Loan!]!            @derivedFrom(field: "owner")

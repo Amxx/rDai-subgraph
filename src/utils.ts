@@ -21,7 +21,12 @@ export function createLoanID(owner: string, recipient: string): string
 
 export function fetchAccount(id: string): Account
 {
-	let account = Account.load(id) || new Account(id)
+	let account = Account.load(id)
+	if (account == null)
+	{
+		account = new Account(id)
+		account.balance = BigDecimal.fromString('0')
+	}
 	return account as Account
 }
 

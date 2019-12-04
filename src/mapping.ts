@@ -119,6 +119,7 @@ export function handleHatCreated(event: HatCreatedEvent): void
 	for (let i = 0;  i < hataccounts.length; ++i)
 	{
 		let hatmembership = new HatMembership(hat.id.concat(i.toString()))
+		hatmembership.hat     = hat.id
 		hatmembership.account = hataccounts[i].toHex()
 		hatmembership.portion = hatportions[i]
 		hatmembership.save()
