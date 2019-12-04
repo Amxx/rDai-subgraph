@@ -6,6 +6,7 @@ import {
 
 import {
 	Account,
+	Loan,
 	Transaction,
 } from '../generated/schema'
 

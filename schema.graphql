@@ -31,7 +31,7 @@ type Loan @entity
 	# ---------------------------------- state ----------------------------------
 	owner:                        Account!
 	recipient:                    Account!
-	value:                        BigDecimal! # in rDai (accounts[owner].lRecipients[recipient])
+	amount:                       BigDecimal! # in rDai (accounts[owner].lRecipients[recipient])
 	hat:                          Hat! # todo: case 0 ?
 	# ---------------------------------- links ----------------------------------
 	transfers:                    [LoanTransferred!]! @derivedFrom(field: "loan")

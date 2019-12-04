@@ -1,5 +1,6 @@
 import {
-	EthereumEvent
+	BigDecimal,
+	EthereumEvent,
 } from "@graphprotocol/graph-ts"
 
 import {
@@ -141,7 +142,33 @@ export function handleInterestPaid(event: InterestPaidEvent): void
 
 export function handleLoansTransferred(event: LoansTransferredEvent): void
 {
-	// TODO
+	let ownerAccount = fetchAccount(event.params.owner.toHex())
+	ownerAccount.save()
+
+	let recipientAccount = fetchAccount(event.params.recipient.toHex())
+	recipientAccount.save()
+
+	let id    = createLoanID(ownerAccount.id, recipientAccount.id)
+	let value = toDai(event.params.redeemableAmount)
+	let delta = event.params.isDistribution ? value : -value
+
+	let loan = Loan.load(id)
+	if (loan == null)
+	{
+		loan = new Loan(id)
+		loan.owner     = ownerAccount.id
+		loan.recipient = recipientAccount.id
+		loan.amount     = BigDecimal.fromString('0')
+	}
+	loan.hat    = event.params.hatId.toString()
+	loan.amount = loan.amount + delta
+	loan.save()
+
+	let ev = new LoanTransferred(createEventID(event))
+	ev.transaction = logTransaction(event).id
+	ev.loan        = id
+	ev.value       = value
+	ev.save()
 }
 
 export function handleTransfer(event: TransferEvent): void
