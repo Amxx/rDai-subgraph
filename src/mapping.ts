@@ -167,7 +167,7 @@ export function handleLoansTransferred(event: LoansTransferredEvent): void
 	let ev = new LoanTransferred(createEventID(event))
 	ev.transaction = logTransaction(event).id
 	ev.loan        = id
-	ev.value       = value
+	ev.value       = delta
 	ev.save()
 }
 
