@@ -148,9 +148,10 @@ export function handleLoansTransferred(event: LoansTransferredEvent): void
 	let recipientAccount = fetchAccount(event.params.recipient.toHex())
 	recipientAccount.save()
 
-	let id    = createLoanID(ownerAccount.id, recipientAccount.id)
-	let value = toDai(event.params.redeemableAmount)
-	let delta = event.params.isDistribution ? value : -value
+	let id     = createLoanID(ownerAccount.id, recipientAccount.id)
+	let delta  = event.params.isDistribution
+		?  toDai(event.params.redeemableAmount)
+		: -toDai(event.params.redeemableAmount)
 
 	let loan = Loan.load(id)
 	if (loan == null)
