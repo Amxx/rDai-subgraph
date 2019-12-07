@@ -105,6 +105,7 @@ export function handleHatChanged(event: HatChangedEvent): void
 	ev.transaction = logTransaction(event).id
 	ev.account     = event.params.account.toHex()
 	ev.hat         = event.params.newHatID.toString()
+	ev.oldHat      = event.params.oldHatID.toString() // tmp
 	ev.save()
 }
 

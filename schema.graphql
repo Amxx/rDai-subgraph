@@ -96,5 +96,6 @@ type HatChanged implements Event @entity
 	id:                           ID!
 	transaction:                  Transaction!
 	account:                      Account!
-	hat:                          Hat!
+	hat:                          Hat # todo: case 0 ?
+	oldHat:                       Hat # tmp
 }
