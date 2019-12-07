@@ -1,7 +1,7 @@
 {
-  "name": "rDai-subgrapg",
+  "name": "rSai-subgraph",
   "version": "0.0.1",
-  "description": "A subgraph to explore the rDai network",
+  "description": "A subgraph to explore the rSai network",
   "authors": "Hadrien Croubois & Patrick Gallagher",
   "license": "",
   "homepage": "",
@@ -17,10 +17,10 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ amxx/rDai",
-    "create-local": "graph create --node http://localhost:8020/ amxx/rDai",
-    "remove-local": "graph remove --node http://localhost:8020/ amxx/rDai",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 amxx/rDai"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ amxx/rSai",
+    "create-local": "graph create --node http://localhost:8020/ amxx/rSai",
+    "remove-local": "graph remove --node http://localhost:8020/ amxx/rSai",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 amxx/rSai"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.16.2",
