@@ -6,9 +6,9 @@ dataSources:
     name: RToken
     network: mainnet
     source:
-      address: "0xea8b224eDD3e342DEb514C4176c2E72Bcce6fFF9"
+      address: "0x261b45D85cCFeAbb11F022eBa346ee8D1cd488c0"
       abi: RToken
-      startBlock: 8764716
+      startBlock: 9117140
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.3
